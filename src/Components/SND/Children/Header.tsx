@@ -1,25 +1,55 @@
 import * as React from "react";
-import { IHeaderProps, IClosedHeaderprops } from "./index";
-import { ClosedHeaderDiv, ClosedHeaderButton } from "./Header.styles";
+import { IHeaderProps, IClosedHeaderprops } from "../";
+import { HeaderDiv, HeaderButton, HeaderInput } from "./Header.styles";
 
-const ClosedHeader = ({ Caption }: IClosedHeaderprops) => (
+import SearchIcon from "../../Icons/SearchIcon";
+import CrossIcon from "../../Icons/CrossIcon";
+
+const ClosedHeader = ({ Caption, Icon, OnButtonClick }: IClosedHeaderprops) => (
   <>
-    <ClosedHeaderDiv>
+    <HeaderDiv>
       {Caption}
-      <ClosedHeaderButton>{/* <Icon /> */}</ClosedHeaderButton>
-    </ClosedHeaderDiv>
+      <HeaderButton onClick={OnButtonClick}>{<Icon />}</HeaderButton>
+    </HeaderDiv>
   </>
 );
 
-export default ({ Mode, Placeholder, ValueDescription }: IHeaderProps) => {
+const SearchHeader = () => (
+  <>
+    <HeaderDiv>
+      <HeaderInput type="text" spellCheck autoComplete />
+      <SearchIcon />
+    </HeaderDiv>
+  </>
+);
+
+export default ({
+  Mode,
+  Placeholder,
+  ValueDescription,
+  OnButtonClick,
+  OnSearch
+}: IHeaderProps) => {
   return (
     <>
       <>
-        {Mode === "InSearch" && <div>search</div>}
+        {Mode === "InSearch" && <SearchHeader />}
 
-        {Mode === "HasValue" && <ClosedHeader Caption={ValueDescription} />}
+        {Mode === "HasValue" && (
+          <ClosedHeader
+            OnButtonClick={OnButtonClick}
+            Icon={CrossIcon}
+            Caption={ValueDescription}
+          />
+        )}
 
-        {Mode === "IsEmpty" && <ClosedHeader Caption={Placeholder} />}
+        {Mode === "IsEmpty" && (
+          <ClosedHeader
+            OnButtonClick={OnButtonClick}
+            Icon={SearchIcon}
+            Caption={Placeholder}
+          />
+        )}
       </>
     </>
   );
