@@ -5,10 +5,20 @@ import { ISNDData } from "../";
 import { Row, IconWrapperDiv, TextWrapperDiv } from "./FolderItem.styles";
 import { Text } from "../../Text";
 
-export default ({ Description, Folder, Caption }: ISNDData) => {
+export interface IFolderItemProps {
+  Data: ISNDData;
+  OnClick: (item: ISNDData) => void;
+}
+
+export default (props: IFolderItemProps) => {
+  const { Folder, Description, Caption } = props.Data;
   return (
     <>
-      <Row tabIndex={0} IsFolder={Folder} HasDescription={Description}>
+      <Row
+        onClick={() => props.OnClick(props.Data)}
+        IsFolder={Folder}
+        HasDescription={Description}
+      >
         <IconWrapperDiv>
           {Folder ? <FolderIcon /> : <DocumentIcon />}
         </IconWrapperDiv>

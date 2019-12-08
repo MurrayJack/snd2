@@ -1,4 +1,4 @@
-type Mode = "InSearch" | "IsEmpty" | "HasValue";
+type Mode = "InSearch" | "IsEmpty" | "HasValue" | "InFolder";
 
 export interface ISNDData {
   ID: string | number;
@@ -8,10 +8,9 @@ export interface ISNDData {
 }
 
 export interface ISNDProps {
-  Data: ISNDData[];
+  InitialPageData: ISNDData[];
   Placeholder: string;
   Value?: ISNDData;
-  AskForClearConfirmation?: boolean;
 
   OnSearch: (search: string) => Promise<ISNDData[]>;
   OnChange: (value?: ISNDData) => void;
@@ -19,9 +18,11 @@ export interface ISNDProps {
 }
 
 export interface ISNDState {
-  Data?: ISNDData[];
+  CurrentPageData?: ISNDData[];
   CurrentValue?: ISNDData;
+  CurrentParent?: ISNDData;
   Mode: Mode;
+  DropdownVisibility?: boolean;
 }
 
 export interface IClosedHeaderprops {
@@ -34,13 +35,21 @@ export interface IHeaderProps {
   Mode: Mode;
   Placeholder?: string;
   Value?: ISNDData;
-  //OnButtonClick: () => void;
-  OnSearch?: (search: string) => void;
-  OnClearClick?: () => void;
+  ParentFolder?: ISNDData;
+
+  OnSearch: (search: string) => void;
+  OnSearchClear: () => void;
+
+  OnEmptyClick: () => void;
+
+  OnValueClick: () => void;
+  OnValueClearClick: () => void;
+
+  OnFolderClick: () => void;
+  OnFolderClearClick: () => void;
 }
 
 export interface IDropdownProps {
-  Items: ISNDData[];
-  OnFolderClick: (item: ISNDData) => void;
-  OnItemClick: (item: ISNDData) => void;
+  PageData: ISNDData[];
+  OnItemClick: (data: ISNDData) => void;
 }

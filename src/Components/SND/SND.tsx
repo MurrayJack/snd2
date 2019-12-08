@@ -1,73 +1,116 @@
 import * as React from "react";
 import Header from "./Children/Header";
 import Dropdown from "./Children/Dropdown";
-
+import { Manager, Reference, Popper } from "react-popper";
 import { ISNDProps, ISNDData, ISNDState } from "./";
+import { SNDWrapper } from "./SND.styles";
 
 export default ({
-  Data,
+  InitialPageData,
   Value,
   Placeholder,
   OnSearch,
-  OnPageDataRequest,
-  AskForClearConfirmation = true
+  OnChange,
+  OnPageDataRequest
 }: ISNDProps) => {
-  const [data, setData] = React.useState<ISNDState>({
-    Data,
-    Mode: "HasValue",
-    CurrentValue: undefined
+  const [state, setState] = React.useState<ISNDState>({
+    Mode: "IsEmpty",
+    CurrentPageData: InitialPageData,
+    CurrentValue: Value
   });
 
-  // const handleOnSearch = (search: string) => {
-  //   OnSearch(search).then(newPageData => {
-  //     setData({ Data: newPageData });
-  //   });
-  // };
-
-  const handleFolderClick = (item: ISNDData) => {
-    // OnPageDataRequest(item).then(newPageData => {
-    //   setData({ Data: newPageData });
-    // });
+  const handleSearch = (search: string) => {
+    OnSearch(search).then(newPageData => {
+      setState({ ...state, CurrentPageData: newPageData });
+    });
   };
 
-  const handleItemClick = (item: ISNDData) => {};
+  const handleSearchClear = () => {
+    setState({ ...state, DropdownVisibility: false, Mode: "IsEmpty" });
+  };
 
-  const handleClearClick = () => {
-    setData({
-      Data: undefined,
+  const handleValueClearClick = () => {
+    setState({
+      ...state,
+      CurrentPageData: InitialPageData,
       CurrentValue: undefined,
-      Mode: "IsEmpty"
+      Mode: "IsEmpty",
+      DropdownVisibility: false
+    });
+
+    OnChange(undefined);
+  };
+
+  const handleItemClick = (data: ISNDData) => {
+    if (data.Folder) {
+      OnPageDataRequest(data).then(newPageData => {
+        setState({
+          ...state,
+          CurrentParent: data,
+          CurrentPageData: newPageData,
+          Mode: "InFolder"
+        });
+      });
+    } else {
+      setState({
+        ...state,
+        Mode: "HasValue",
+        CurrentValue: data,
+        DropdownVisibility: false
+      });
+
+      OnChange(data);
+    }
+  };
+
+  const handleEmptyClick = () => {
+    /*
+      Clicking on an empty control should
+      1) show the dropdown
+      2) ask for any data
+      3) go into search mode 
+    */
+    setState({
+      ...state,
+      Mode: "InSearch",
+      DropdownVisibility: true
     });
   };
 
   return (
     <>
-      {/* Is Searching */}
-      {/* <Header Mode="InSearch" OnSearch={handleOnSearch} /> */}
-
-      {/* Is Empty */}
-      {/* <Header
-        Mode="IsEmpty"
-        Placeholder={Placeholder}
-        OnSearch={handleOnSearch}
-      /> */}
-
-      {/* Has Value */}
-      <Header
-        Mode={data.Mode}
-        Value={Value}
-        Placeholder={Placeholder}
-        OnClearClick={handleClearClick}
-      />
-
-      {/*  */}
-
-      {/* dropdown */}
-      <Dropdown
-        Items={data.Data}
-        OnFolderClick={handleFolderClick}
-        OnItemClick={handleItemClick}
-      />
+      <SNDWrapper>
+        <Manager>
+          <Reference>
+            {({ ref }) => (
+              <div ref={ref}>
+                <Header
+                  Mode={state.Mode}
+                  Value={state.CurrentValue}
+                  Placeholder={Placeholder}
+                  CurrentParent={state.CurrentParent}
+                  OnEmptyClick={handleEmptyClick}
+                  OnSearch={handleSearch}
+                  OnSearchClear={handleSearchClear}
+                  OnValueClearClick={handleValueClearClick}
+                />
+              </div>
+            )}
+          </Reference>
+          <Popper placement="bottom-start">
+            {({ ref, style }) => (
+              <div ref={ref} style={{ ...style, width: "auto" }}>
+                {state.DropdownVisibility && (
+                  <Dropdown
+                    PageData={state.CurrentPageData}
+                    OnItemClick={handleItemClick}
+                  />
+                )}
+              </div>
+            )}
+          </Popper>
+        </Manager>
+      </SNDWrapper>
     </>
   );
 };
