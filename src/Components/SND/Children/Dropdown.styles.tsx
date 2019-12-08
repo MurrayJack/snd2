@@ -2,17 +2,12 @@ import styled from "styled-components";
 
 export const DropdownWrapperDiv = styled.div`
   background: white;
+  height: 330px;
+  overflow-y: auto;
 
   > ul {
-    width: 100%;
+    list-style: none;
     padding: 0;
     margin: 0;
-
-    > li {
-      padding: 0 16px;
-      height: 40px;
-      display: grid;
-      align-items: center;
-    }
   }
 `;

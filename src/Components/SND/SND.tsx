@@ -2,38 +2,72 @@ import * as React from "react";
 import Header from "./Children/Header";
 import Dropdown from "./Children/Dropdown";
 
-import { ISNDProps } from "./";
+import { ISNDProps, ISNDData, ISNDState } from "./";
 
-export default ({ Data }: ISNDProps) => {
-  const handleOnSearch = () => false;
+export default ({
+  Data,
+  Value,
+  Placeholder,
+  OnSearch,
+  OnPageDataRequest,
+  AskForClearConfirmation = true
+}: ISNDProps) => {
+  const [data, setData] = React.useState<ISNDState>({
+    Data,
+    Mode: "HasValue",
+    CurrentValue: undefined
+  });
+
+  // const handleOnSearch = (search: string) => {
+  //   OnSearch(search).then(newPageData => {
+  //     setData({ Data: newPageData });
+  //   });
+  // };
+
+  const handleFolderClick = (item: ISNDData) => {
+    // OnPageDataRequest(item).then(newPageData => {
+    //   setData({ Data: newPageData });
+    // });
+  };
+
+  const handleItemClick = (item: ISNDData) => {};
+
+  const handleClearClick = () => {
+    setData({
+      Data: undefined,
+      CurrentValue: undefined,
+      Mode: "IsEmpty"
+    });
+  };
 
   return (
     <>
       {/* Is Searching */}
-      <Header
-        Mode="InSearch"
-        OnButtonClick={handleOnSearch}
-        OnSearch={handleOnSearch}
-      />
+      {/* <Header Mode="InSearch" OnSearch={handleOnSearch} /> */}
 
       {/* Is Empty */}
-      <Header
+      {/* <Header
         Mode="IsEmpty"
-        Placeholder="Please Select"
-        OnButtonClick={handleOnSearch}
+        Placeholder={Placeholder}
         OnSearch={handleOnSearch}
-      />
+      /> */}
 
       {/* Has Value */}
       <Header
-        Mode="HasValue"
-        ValueDescription="Value"
-        OnButtonClick={handleOnSearch}
-        OnSearch={handleOnSearch}
+        Mode={data.Mode}
+        Value={Value}
+        Placeholder={Placeholder}
+        OnClearClick={handleClearClick}
       />
 
       {/*  */}
-      <Dropdown Items={Data} />
+
+      {/* dropdown */}
+      <Dropdown
+        Items={data.Data}
+        OnFolderClick={handleFolderClick}
+        OnItemClick={handleItemClick}
+      />
     </>
   );
 };

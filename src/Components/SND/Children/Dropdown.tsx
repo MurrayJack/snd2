@@ -1,16 +1,19 @@
 import * as React from "react";
 import { IDropdownProps } from "../";
 import { DropdownWrapperDiv } from "./Dropdown.styles";
-import Item from "./Item";
+import FolderItem from "./FolderItem";
 
 export default ({ Items }: IDropdownProps) => {
   return (
     <>
       <DropdownWrapperDiv>
         <ul>
-          {Items.map(e => (
-            <li>{e.Folder ? <Item {...e} /> : <div>asd</div>}</li>
-          ))}
+          {Items &&
+            Items.map(e => (
+              <li key={e.Caption}>
+                <FolderItem {...e} />
+              </li>
+            ))}
         </ul>
       </DropdownWrapperDiv>
     </>

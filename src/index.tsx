@@ -7,7 +7,14 @@ import data from "./data";
 function App() {
   return (
     <div className="app">
-      <SND Data={data} />
+      <SND
+        Data={data}
+        Value={data[0]}
+        OnChange={alert}
+        OnPageDataRequest={Promise.resolve(alert)}
+        OnSearch={Promise.resolve(alert)}
+        Placeholder="Please Select"
+      />
     </div>
   );
 }

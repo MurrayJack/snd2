@@ -17,7 +17,7 @@ const ClosedHeader = ({ Caption, Icon, OnButtonClick }: IClosedHeaderprops) => (
 const SearchHeader = () => (
   <>
     <HeaderDiv>
-      <HeaderInput type="text" spellCheck autoComplete />
+      <HeaderInput type="text" spellCheck />
       <SearchIcon />
     </HeaderDiv>
   </>
@@ -26,9 +26,9 @@ const SearchHeader = () => (
 export default ({
   Mode,
   Placeholder,
-  ValueDescription,
-  OnButtonClick,
-  OnSearch
+  Value,
+  OnSearch,
+  OnClearClick
 }: IHeaderProps) => {
   return (
     <>
@@ -37,15 +37,15 @@ export default ({
 
         {Mode === "HasValue" && (
           <ClosedHeader
-            OnButtonClick={OnButtonClick}
+            OnButtonClick={OnClearClick}
             Icon={CrossIcon}
-            Caption={ValueDescription}
+            Caption={Value ? Value.Caption : ""}
           />
         )}
 
         {Mode === "IsEmpty" && (
           <ClosedHeader
-            OnButtonClick={OnButtonClick}
+            //OnButtonClick={OnButtonClick}
             Icon={SearchIcon}
             Caption={Placeholder}
           />
